@@ -1,0 +1,40 @@
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 mousePosition;
+uniform float mass;
+uniform vec3 gravColor;
+uniform float squaredGravConstant;
+uniform vec3 matterColor;
+uniform float radius;
+
+float FindAlpha( vec2 pixelLocation )
+{
+	vec2 distance = ( mousePosition - gl_FragCoord.xy );
+	
+	distance *= distance;
+
+	float squaredDistance = distance.x + distance.y;
+
+	return ( squaredGravConstant * mass * mass ) / squaredDistance;
+	
+} 
+
+void main()
+{
+	vec2 distance = gl_FragCoord.xy - mousePosition;
+
+	distance *= distance; 
+
+	if( distance.x + distance.y > radius * radius )
+	{
+
+		gl_FragColor = vec4(gravColor, FindAlpha( gl_FragCoord.xy ) );
+	}
+
+	else
+	{
+		gl_FragColor = vec4( matterColor, 1.0 );
+	}
+}
